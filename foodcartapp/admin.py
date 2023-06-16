@@ -108,6 +108,13 @@ class ProductAdmin(admin.ModelAdmin):
     pass
 
 
+class OrderProductInline(admin.TabularInline):
+    model = OrderProduct
+    extra = 1
+
+
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
-    pass
+    inlines = [
+        OrderProductInline
+    ]
