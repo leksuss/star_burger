@@ -135,8 +135,6 @@ class Order(models.Model):
     )
     phone = PhoneNumberField(
         'Телефон',
-        unique=True,
-
     )
     address = models.CharField(
         'Адрес',
