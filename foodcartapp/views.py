@@ -4,6 +4,7 @@ from django.http import JsonResponse
 from django.templatetags.static import static
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from rest_framework import status
 
 from .models import Product
 from .models import Order
@@ -63,13 +64,28 @@ def product_list_api(request):
 
 @api_view(['POST'])
 def register_order_api(request):
-    try:
-        order = request.data
-        print(order)
-    except ValueError:
-        return Response({
-            'error': 'json is not valid',
-        })
+    order = request.data
+    if 'products' not in order:
+        return Response(
+            {'error': 'products is required field'},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+    if order['products'] is None:
+        return Response(
+            {'error': "products field can\'t be blank or null"},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+    if not isinstance(order['products'], list):
+        return Response(
+            {'error': 'products field should be a list'},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+    if not len(order['products']):
+        return Response(
+            {'error': 'products field should not be blank list'},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
     order_obj = Order.objects.create(
         firstname=order['firstname'],
         lastname=order['lastname'],
