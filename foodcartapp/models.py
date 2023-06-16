@@ -1,6 +1,6 @@
 from django.db import models
 from django.core.validators import MinValueValidator
-
+from phonenumber_field.modelfields import PhoneNumberField
 
 class Restaurant(models.Model):
     name = models.CharField(
@@ -82,6 +82,7 @@ class Product(models.Model):
         max_length=200,
         blank=True,
     )
+    restaurant = models.ManyToManyField(Restaurant, through='RestaurantMenuItem')
 
     objects = ProductQuerySet.as_manager()
 
@@ -97,7 +98,7 @@ class RestaurantMenuItem(models.Model):
     restaurant = models.ForeignKey(
         Restaurant,
         related_name='menu_items',
-        verbose_name="ресторан",
+        verbose_name='ресторан',
         on_delete=models.CASCADE,
     )
     product = models.ForeignKey(
@@ -109,7 +110,7 @@ class RestaurantMenuItem(models.Model):
     availability = models.BooleanField(
         'в продаже',
         default=True,
-        db_index=True
+        db_index=True,
     )
 
     class Meta:
@@ -120,4 +121,61 @@ class RestaurantMenuItem(models.Model):
         ]
 
     def __str__(self):
-        return f"{self.restaurant.name} - {self.product.name}"
+        return f'{self.restaurant.name} - {self.product.name}'
+
+
+class Order(models.Model):
+    name = models.CharField(
+        'Имя',
+        max_length=100,
+    )
+    surname = models.CharField(
+        'Фамилия',
+        max_length=100,
+    )
+    phone = PhoneNumberField(
+        'Телефон',
+        unique=True,
+
+    )
+    address = models.CharField(
+        'Адрес',
+        max_length=255,
+    )
+    product = models.ManyToManyField(Product, through='OrderProduct')
+
+    class Meta:
+        verbose_name = 'заказ'
+        verbose_name_plural = 'заказы'
+
+    def __str__(self):
+        return f'{self.name} {self.surname} - {self.address}'
+
+
+class OrderProduct(models.Model):
+    order = models.ForeignKey(
+        Order,
+        related_name='order_products',
+        verbose_name='Заказ',
+        on_delete=models.CASCADE,
+    )
+    product = models.ForeignKey(
+        Product,
+        related_name='order_products',
+        verbose_name='Товар',
+        on_delete=models.CASCADE,
+    )
+    count = models.PositiveIntegerField(
+        'Количество',
+        default=1,
+    )
+
+    class Meta:
+        verbose_name = 'товар в заказе'
+        verbose_name_plural = 'товары в заказе'
+        unique_together = [
+            ['order', 'product']
+        ]
+
+    def __str__(self):
+        return f'Заказ {self.order.id} - {self.product.name}'
