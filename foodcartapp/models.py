@@ -166,6 +166,7 @@ class OrderProduct(models.Model):
     quantity = models.PositiveIntegerField(
         'Количество',
         default=0,
+        validators=[MinValueValidator(1)]
     )
 
     class Meta:

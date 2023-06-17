@@ -10,6 +10,8 @@ from .models import Product
 from .models import Order
 from .models import OrderProduct
 
+from .serializers import OrderSerializer
+
 
 def banners_list_api(request):
     # FIXME move data to db?
@@ -64,38 +66,20 @@ def product_list_api(request):
 
 @api_view(['POST'])
 def register_order_api(request):
-    order = request.data
-    if 'products' not in order:
-        return Response(
-            {'error': 'products is required field'},
-            status=status.HTTP_400_BAD_REQUEST,
-        )
-    if order['products'] is None:
-        return Response(
-            {'error': "products field can\'t be blank or null"},
-            status=status.HTTP_400_BAD_REQUEST,
-        )
-    if not isinstance(order['products'], list):
-        return Response(
-            {'error': 'products field should be a list'},
-            status=status.HTTP_400_BAD_REQUEST,
-        )
-    if not len(order['products']):
-        return Response(
-            {'error': 'products field should not be blank list'},
-            status=status.HTTP_400_BAD_REQUEST,
-        )
+    serializer = OrderSerializer(data=request.data)
+    serializer.is_valid(raise_exception=True)
+
 
     order_obj = Order.objects.create(
-        firstname=order['firstname'],
-        lastname=order['lastname'],
-        phonenumber=order['phonenumber'],
-        address=order['address'],
+        firstname=serializer.validated_data['firstname'],
+        lastname=serializer.validated_data['lastname'],
+        phonenumber=serializer.validated_data['phonenumber'],
+        address=serializer.validated_data['address'],
     )
-    for product in order['products']:
+    for product in serializer.validated_data['products']:
         OrderProduct.objects.create(
             order=order_obj,
-            product=Product.objects.get(pk=product['product']),
+            product=product['product'],
             quantity=product['quantity'],
         )
-    return Response({'sucess': 'order registered'})
+    return Response({'order_id': order_obj.id})
