@@ -11,6 +11,7 @@ class OrderProductSerializer(ModelSerializer):
 class OrderSerializer(ModelSerializer):
     products = ListField(
         child=OrderProductSerializer(),
+        allow_empty=False,
     )
     class Meta:
         model = Order
