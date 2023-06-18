@@ -1,4 +1,4 @@
-from rest_framework.serializers import ListField, ModelSerializer
+from rest_framework.serializers import ListField, ModelSerializer, CharField
 from .models import Order, OrderProduct
 
 
@@ -9,10 +9,8 @@ class OrderProductSerializer(ModelSerializer):
 
 
 class OrderSerializer(ModelSerializer):
-    products = ListField(
-        child=OrderProductSerializer(),
-        allow_empty=False,
-    )
+    products = OrderProductSerializer(many=True, allow_empty=False, write_only=True)
+
     class Meta:
         model = Order
         fields = '__all__'
