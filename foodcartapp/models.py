@@ -146,6 +146,9 @@ class Order(models.Model):
         related_name='products_in_order',
     )
 
+    def fullname(self):
+        return f'{self.firstname} {self.lastname}'
+
     class Meta:
         verbose_name = 'заказ'
         verbose_name_plural = 'заказы'
