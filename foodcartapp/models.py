@@ -1,6 +1,9 @@
 from django.db import models
+from django.db.models import F, Sum
 from django.core.validators import MinValueValidator
 from phonenumber_field.modelfields import PhoneNumberField
+
+
 
 class Restaurant(models.Model):
     name = models.CharField(
@@ -124,10 +127,11 @@ class RestaurantMenuItem(models.Model):
         return f'{self.restaurant.name} - {self.product.name}'
 
 
-class TotalSumQuerySet(models.QuerySet):
-    def with_total_sum(self):
-        return self.filter(role='Author')
-
+class TotalPriceQuerySet(models.QuerySet):
+    def with_total_price(self):
+        return self.annotate(
+            total_price=Sum(F('order_products__price') * F('order_products__quantity'))
+        )
 
 class Order(models.Model):
     firstname = models.CharField(
@@ -151,7 +155,7 @@ class Order(models.Model):
         related_name='products_in_order',
     )
 
-    objects = TotalSumQuerySet.as_manager()
+    objects = TotalPriceQuerySet.as_manager()
 
     @property
     def fullname(self):
