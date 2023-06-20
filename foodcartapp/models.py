@@ -124,6 +124,11 @@ class RestaurantMenuItem(models.Model):
         return f'{self.restaurant.name} - {self.product.name}'
 
 
+class TotalSumQuerySet(models.QuerySet):
+    def with_total_sum(self):
+        return self.filter(role='Author')
+
+
 class Order(models.Model):
     firstname = models.CharField(
         'Имя',
@@ -146,6 +151,9 @@ class Order(models.Model):
         related_name='products_in_order',
     )
 
+    objects = TotalSumQuerySet.as_manager()
+
+    @property
     def fullname(self):
         return f'{self.firstname} {self.lastname}'
 
@@ -173,7 +181,11 @@ class OrderProduct(models.Model):
     quantity = models.PositiveIntegerField(
         'Количество',
         default=0,
-        validators=[MinValueValidator(1)]
+        validators=[MinValueValidator(1)],
+    )
+    price = models.PositiveIntegerField(
+        'Цена',
+        default=0,
     )
 
     class Meta:
