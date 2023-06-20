@@ -75,11 +75,15 @@ def register_order_api(request):
         phonenumber=serializer.validated_data['phonenumber'],
         address=serializer.validated_data['address'],
     )
+
+    order_products = []
     for product in serializer.validated_data['products']:
-        OrderProduct.objects.create(
+        order_products.append(OrderProduct(
             order=order_obj,
             product=product['product'],
             quantity=product['quantity'],
-        )
+            price=product['product'].price,
+        ))
+    OrderProduct.objects.bulk_create(order_products)
 
     return Response(OrderSerializer(order_obj).data)

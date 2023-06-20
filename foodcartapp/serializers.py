@@ -1,4 +1,4 @@
-from rest_framework.serializers import ListField, ModelSerializer, CharField
+from rest_framework.serializers import ModelSerializer, SerializerMethodField
 from .models import Order, OrderProduct
 
 
