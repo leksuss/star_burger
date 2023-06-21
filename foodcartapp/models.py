@@ -166,6 +166,11 @@ class Order(models.Model):
         default=0,
         db_index=True,
     )
+    comment = models.TextField(
+        'Комментарий',
+        default='',
+        blank=True,
+    )
 
     objects = TotalPriceQuerySet.as_manager()
 
