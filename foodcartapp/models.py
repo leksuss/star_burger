@@ -134,6 +134,12 @@ class TotalPriceQuerySet(models.QuerySet):
         )
 
 class Order(models.Model):
+    STATUSES = [
+        (0, 'Необработанный'),
+        (1, 'Собирается'),
+        (2, 'Доставляется'),
+        (3, 'Выполнен'),
+    ]
     firstname = models.CharField(
         'Имя',
         max_length=100,
@@ -153,6 +159,12 @@ class Order(models.Model):
         Product,
         through='OrderProduct',
         related_name='products_in_order',
+    )
+    status = models.IntegerField(
+        'Статус',
+        choices=STATUSES,
+        default=0,
+        db_index=True,
     )
 
     objects = TotalPriceQuerySet.as_manager()

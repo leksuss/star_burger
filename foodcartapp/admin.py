@@ -120,6 +120,9 @@ class OrderAdmin(admin.ModelAdmin):
     inlines = [
         OrderProductInline
     ]
+    list_filter = [
+        'status',
+    ]
 
     def response_post_save_change(self, request, obj):
         res = super().response_post_save_change(request, obj)
