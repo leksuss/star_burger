@@ -141,6 +141,10 @@ class Order(models.Model):
         (2, 'Доставляется'),
         (3, 'Выполнен'),
     ]
+    PAYMENT_TYPES = [
+        (0, 'Наличными'),
+        (1, 'Электронно'),
+    ]
     firstname = models.CharField(
         'Имя',
         max_length=100,
@@ -160,6 +164,12 @@ class Order(models.Model):
         Product,
         through='OrderProduct',
         related_name='products_in_order',
+    )
+    payment_type = models.IntegerField(
+        'Способ оплаты',
+        choices=PAYMENT_TYPES,
+        default=0,
+        db_index=True,
     )
     status = models.IntegerField(
         'Статус',
