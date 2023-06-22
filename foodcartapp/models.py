@@ -1,9 +1,9 @@
 from django.core.validators import MinValueValidator
 from django.db import models
-from django.db.models import F, Sum
+from django.db.models import F, Sum, signals
+from django.dispatch import receiver
 from django.utils import timezone
 from phonenumber_field.modelfields import PhoneNumberField
-
 
 
 class Restaurant(models.Model):
@@ -128,16 +128,17 @@ class RestaurantMenuItem(models.Model):
         return f'{self.restaurant.name} - {self.product.name}'
 
 
-class TotalPriceQuerySet(models.QuerySet):
+class OrderQuerySet(models.QuerySet):
     def with_total_price(self):
         return self.annotate(
             total_price=Sum(F('order_products__price') * F('order_products__quantity'))
         )
 
+
 class Order(models.Model):
     STATUSES = [
-        (0, 'Необработанный'),
-        (1, 'Собирается'),
+        (0, 'Новый'),
+        (1, 'Готовится'),
         (2, 'Доставляется'),
         (3, 'Выполнен'),
     ]
@@ -163,7 +164,14 @@ class Order(models.Model):
     products = models.ManyToManyField(
         Product,
         through='OrderProduct',
-        related_name='products_in_order',
+        related_name='orders',
+    )
+    restaurant = models.ForeignKey(
+        Restaurant,
+        verbose_name='Готовит ресторан',
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
     )
     payment_type = models.IntegerField(
         'Способ оплаты',
@@ -200,7 +208,7 @@ class Order(models.Model):
         db_index=True,
     )
 
-    objects = TotalPriceQuerySet.as_manager()
+    objects = OrderQuerySet.as_manager()
 
     @property
     def fullname(self):
@@ -212,6 +220,13 @@ class Order(models.Model):
 
     def __str__(self):
         return f'{self.firstname} {self.lastname} - {self.address}'
+
+
+@receiver(signals.pre_save, sender=Order)
+def change_order_status(sender, instance, **kwargs):
+    if instance.restaurant is not None and instance.status == 0:
+        instance.status = 1
+
 
 
 class OrderProduct(models.Model):
