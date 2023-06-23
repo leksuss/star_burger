@@ -1,7 +1,6 @@
 from django.core.validators import MinValueValidator
 from django.db import models
-from django.db.models import F, Sum, signals
-from django.dispatch import receiver
+from django.db.models import F, Sum
 from django.utils import timezone
 from phonenumber_field.modelfields import PhoneNumberField
 
@@ -220,13 +219,6 @@ class Order(models.Model):
 
     def __str__(self):
         return f'{self.firstname} {self.lastname} - {self.address}'
-
-
-@receiver(signals.pre_save, sender=Order)
-def change_order_status(sender, instance, **kwargs):
-    if instance.restaurant is not None and instance.status == 0:
-        instance.status = 1
-
 
 
 class OrderProduct(models.Model):
