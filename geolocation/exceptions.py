@@ -1,0 +1,2 @@
+class GetCoordinatesException(Exception):
+    pass
