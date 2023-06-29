@@ -4,9 +4,7 @@ from django.templatetags.static import static
 from django.utils.html import format_html
 from django.utils.http import url_has_allowed_host_and_scheme
 
-import restaurateur.views
 from .models import Product
-from .models import ProductCategory
 from .models import Restaurant
 from .models import RestaurantMenuItem
 from .models import Order
@@ -103,11 +101,6 @@ class ProductAdmin(admin.ModelAdmin):
         edit_url = reverse('admin:foodcartapp_product_change', args=(obj.id,))
         return format_html('<a href="{edit_url}"><img src="{src}" style="max-height: 50px;"/></a>', edit_url=edit_url, src=obj.image.url)
     get_image_list_preview.short_description = 'превью'
-
-
-@admin.register(ProductCategory)
-class ProductAdmin(admin.ModelAdmin):
-    pass
 
 
 class OrderProductInline(admin.TabularInline):

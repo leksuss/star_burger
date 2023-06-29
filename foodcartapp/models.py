@@ -196,7 +196,7 @@ class Order(models.Model):
     )
     called_at = models.DateTimeField(
         'Обратный звонок сделан',
-        null = True,
+        null=True,
         blank=True,
         db_index=True,
     )

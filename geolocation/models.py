@@ -1,7 +1,7 @@
 from django.db import models
-from django.utils import timezone
 
 from geopy import distance
+
 
 class Location(models.Model):
     address = models.CharField(
