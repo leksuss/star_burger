@@ -44,7 +44,13 @@
                   <summary>Может быть приготовлен ресторанами:</summary>
                   <ul>
                     {% for restaurant in item.available_restaurants %}
-                      <li>{{ restaurant }}</li>
+                      <li>{{ restaurant.name }} -
+                        {% if restaurant.distance %}
+                          {{ restaurant.distance }} км
+                        {% else %}
+                          Не удалось определить кооординаты
+                        {% endif %}
+                      </li>
                     {% endfor %}
                   </ul>
                 </details>

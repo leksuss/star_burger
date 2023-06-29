@@ -7,8 +7,8 @@ from django.contrib.auth.decorators import user_passes_test
 from django.contrib.auth import authenticate, login
 from django.contrib.auth import views as auth_views
 
-
 from foodcartapp.models import Product, Restaurant, Order, RestaurantMenuItem
+from geolocation.models import Location
 
 
 class Login(forms.Form):
@@ -92,6 +92,10 @@ def view_restaurants(request):
 
 @user_passes_test(is_manager, login_url='restaurateur:login')
 def view_orders(request):
+    locations = {}
+    for location in Location.objects.all():
+        locations[location.address] = location
+
     restaurants = {}
     menu_items = RestaurantMenuItem.objects\
         .prefetch_related('product', 'restaurant')\
@@ -99,18 +103,27 @@ def view_orders(request):
     for menu_item in menu_items:
         restaurants.setdefault(menu_item.restaurant, []).append(menu_item.product)
 
-    order_items = list(Order.objects
+    orders = list(Order.objects
                        .with_total_price()
                        .prefetch_related('products', 'restaurant')
                        .exclude(status=3)
                        .order_by('status'))
-    for i, item in enumerate(order_items):
+
+    for i, order in enumerate(orders):
         available_restaurants = []
-        for name, menu_items in restaurants.items():
-            if set(item.products.all()).issubset(menu_items):
-                available_restaurants.append(name)
-        order_items[i].available_restaurants = available_restaurants
+        for restaurant, menu_items in restaurants.items():
+            if set(order.products.all()).issubset(menu_items):
+                restaurant_location = locations.get(restaurant.address)
+                order_location = locations.get(order.address)
+                distance = None
+                if order_location and restaurant_location:
+                    distance = restaurant_location.calculate_distance(order_location)
+                available_restaurants.append({
+                    'name': restaurant,
+                    'distance': distance,
+                })
+        orders[i].available_restaurants = available_restaurants
 
     return render(request, template_name='order_items.html', context={
-        'order_items': order_items,
+        'order_items': orders,
     })
