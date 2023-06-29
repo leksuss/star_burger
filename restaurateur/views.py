@@ -122,7 +122,10 @@ def view_orders(request):
                     'name': restaurant,
                     'distance': distance,
                 })
-        orders[i].available_restaurants = available_restaurants
+        orders[i].available_restaurants = sorted(
+            available_restaurants,
+            key=lambda x: (x['distance'] is None, x['distance']),
+        )
 
     return render(request, template_name='order_items.html', context={
         'order_items': orders,
