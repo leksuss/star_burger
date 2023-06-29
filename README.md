@@ -21,12 +21,12 @@
 
 Скачайте код:
 ```sh
-git clone https://github.com/devmanorg/star-burger.git
+git clone https://github.com/leksuss/star_burger.git
 ```
 
 Перейдите в каталог проекта:
 ```sh
-cd star-burger
+cd star_burger
 ```
 
 [Установите Python](https://www.python.org/), если этого ещё не сделали.
@@ -37,7 +37,7 @@ python --version
 ```
 **Важно!** Версия Python должна быть не ниже 3.6.
 
-Возможно, вместо команды `python` здесь и в остальных инструкциях этого README придётся использовать `python3`. Зависит это от операционной системы и от того, установлен ли у вас Python старой второй версии. 
+Возможно, вместо команды `python` здесь и в остальных инструкциях этого README придётся использовать `python3`. Зависит это от операционной системы и от того, установлен ли у вас Python старой второй версии.
 
 В каталоге проекта создайте виртуальное окружение:
 ```sh
@@ -54,9 +54,12 @@ python -m venv venv
 pip install -r requirements.txt
 ```
 
-Определите переменную окружения `SECRET_KEY`. Создать файл `.env` в каталоге `star_burger/` и положите туда такой код:
+Получите API ключ у Яндекс-геокодера в [кабинете разработчика](https://developer.tech.yandex.ru/).
+
+Определите переменные окружения `SECRET_KEY` и `YANDEX_GEO_API_KEY`. Создать файл `.env` в каталоге `star_burger/` и положите туда такой код:
 ```sh
 SECRET_KEY=django-insecure-0if40nf4nf93n4
+YANDEX_GEO_API_KEY=<ваш API ключ яндекс-геокодера>
 ```
 
 Создайте файл базы данных SQLite и отмигрируйте её следующей командой:
@@ -97,7 +100,7 @@ npm --version
 Перейдите в каталог проекта и установите пакеты Node.js:
 
 ```sh
-cd star-burger
+cd star_burger
 npm ci --dev
 ```
 
@@ -147,6 +150,7 @@ Parcel будет следить за файлами в каталоге `bundle
 - `DEBUG` — дебаг-режим. Поставьте `False`.
 - `SECRET_KEY` — секретный ключ проекта. Он отвечает за шифрование на сайте. Например, им зашифрованы все пароли на вашем сайте.
 - `ALLOWED_HOSTS` — [см. документацию Django](https://docs.djangoproject.com/en/3.1/ref/settings/#allowed-hosts)
+- `YANDEX_GEO_API_KEY` - получить API ключ у Яндекс-геокодера в [кабинете разработчика](https://developer.tech.yandex.ru/).
 
 ## Цели проекта
 
