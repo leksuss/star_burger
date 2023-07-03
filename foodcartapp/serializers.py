@@ -9,8 +9,19 @@ class OrderProductSerializer(ModelSerializer):
 
 
 class OrderSerializer(ModelSerializer):
-    products = OrderProductSerializer(many=True, allow_empty=False, write_only=True)
+    products = OrderProductSerializer(
+        many=True,
+        allow_empty=False,
+        write_only=True,
+    )
 
     class Meta:
         model = Order
-        fields = '__all__'
+        fields = [
+            'id',
+            'firstname',
+            'lastname',
+            'phonenumber',
+            'address',
+            'products',
+        ]
