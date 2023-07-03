@@ -133,6 +133,12 @@ class OrderQuerySet(models.QuerySet):
             total_price=Sum(F('order_products__price') * F('order_products__quantity'))
         )
 
+    def unfinished(self):
+        return (self.with_total_price()
+                    .prefetch_related('products', 'restaurant')
+                    .exclude(status=3)
+                    .order_by('status'))
+
 
 class Order(models.Model):
     STATUSES = [

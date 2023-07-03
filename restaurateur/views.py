@@ -103,13 +103,8 @@ def view_orders(request):
     for menu_item in menu_items:
         restaurants.setdefault(menu_item.restaurant, []).append(menu_item.product)
 
-    orders = list(Order.objects
-                       .with_total_price()
-                       .prefetch_related('products', 'restaurant')
-                       .exclude(status=3)
-                       .order_by('status'))
-
-    for i, order in enumerate(orders):
+    order_items = list(Order.objects.unfinished())
+    for i, order in enumerate(order_items):
         available_restaurants = []
         for restaurant, menu_items in restaurants.items():
             if set(order.products.all()).issubset(menu_items):
@@ -122,11 +117,11 @@ def view_orders(request):
                     'name': restaurant,
                     'distance': distance,
                 })
-        orders[i].available_restaurants = sorted(
+        order_items[i].available_restaurants = sorted(
             available_restaurants,
             key=lambda x: (x['distance'] is None, x['distance']),
         )
 
     return render(request, template_name='order_items.html', context={
-        'order_items': orders,
+        'order_items': order_items,
     })
