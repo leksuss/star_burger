@@ -236,12 +236,10 @@ class OrderProduct(models.Model):
     )
     quantity = models.PositiveIntegerField(
         'Количество',
-        default=0,
         validators=[MinValueValidator(1)],
     )
     price = models.PositiveIntegerField(
         'Цена',
-        default=0,
     )
 
     class Meta:
