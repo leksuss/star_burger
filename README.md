@@ -153,6 +153,7 @@ Parcel будет следить за файлами в каталоге `bundle
 - `YANDEX_GEO_API_KEY` - получить API ключ у Яндекс-геокодера в [кабинете разработчика](https://developer.tech.yandex.ru/).
 - `ROLLBAR_ACCESS_TOKEN` - получить TOKEN у сервиса мониторинга [rollbar.com](https://rollbar.com/)
 - `ENVIRONMENT` - задать имя окружению для отслеживания ошибок с разных инсталляций.
+- `DB_URL` - указать параметры подключения к БД в формате URL
 
 ## Цели проекта
 
