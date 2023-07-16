@@ -142,3 +142,10 @@ dmypy.json
 cython_debug/
 
 .parcel-cache/
+
+# frontend npm
+package-lock.json
+package.json
+
+# staticfiles
+staticfiles/
