@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e 
+set -e
 set -o pipefail
 
 work_dir="/opt/star_burger"
@@ -21,6 +21,7 @@ export NODE_OPTIONS=--no-experimental-fetch
 npm audit fix
 
 systemctl restart star-burger.service
+systemctl reload nginx.service
 
 last_commit=$(git rev-parse HEAD)
 curl -H "X-Rollbar-Access-Token: ${ROLLBAR_ACCESS_TOKEN}" -H "Content-Type: application/json" -X POST "https://api.rollbar.com/api/1/deploy" -d '{"environment": "production", "revision": "'${last_commit}'", "rollbar_name": "leksus", "local_username": "root", "comment": "Yet Another Deployment", "status": "succeeded"}'
