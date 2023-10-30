@@ -1,0 +1,9 @@
+version: '3.8'
+
+services:
+  test:
+    build:
+      context: .
+    volumes:
+      - ../backend/src/bundles:/src/bundles
+    command: ./node_modules/.bin/parcel build bundles-src/index.js --dist-dir bundles --public-url="./"

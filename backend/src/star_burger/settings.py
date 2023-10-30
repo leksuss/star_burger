@@ -94,7 +94,7 @@ MEDIA_URL = '/media/'
 
 DATABASES = {
     'default': dj_database_url.config(
-        default=env('DB_URL', 'postgres://db_user:db_pass@localhost/db_name')
+        default=env('DATABASE_URL', 'postgres://db_user:db_pass@localhost/db_name')
     )
 }
 

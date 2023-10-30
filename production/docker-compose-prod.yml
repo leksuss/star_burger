@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: ../backend/
+      dockerfile: ../backend/Dockerfile
+    ports:
+      - '8080:8000'
+    volumes:
+      - media:/src/media
+      - staticfiles:/src/staticfiles
+    restart: always
+    depends_on:
+      - db
+    entrypoint: gunicorn -w 3 -b 127.0.0.1:8000 star_burger.wsgi:application
+  db:
+    image: postgres
+    env_file:
+      - ../backend/src/star_burger/.env
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:
+  media:
+  staticfiles:
