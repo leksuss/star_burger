@@ -6,8 +6,6 @@ RUN apt-get update \
 
 WORKDIR /src
 
-RUN pip install gunicorn --upgrade pip
-
 COPY /src/requirements.txt requirements.txt
 RUN pip3 install -r requirements.txt
 

@@ -94,7 +94,7 @@ MEDIA_URL = '/media/'
 
 DATABASES = {
     'default': dj_database_url.config(
-        default=env('DATABASE_URL', 'postgres://db_user:db_pass@localhost/db_name')
+        default=env('DATABASE_URL', f'sqlite:///{BASE_DIR}/db.sqlite3')
     )
 }
 
@@ -131,7 +131,7 @@ INTERNAL_IPS = [
 
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'assets'),
-    os.path.join(BASE_DIR, 'bundles'),
+    # os.path.join(BASE_DIR, 'bundles'),
 ]
 
 LOGGING = {
