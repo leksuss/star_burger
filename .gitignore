@@ -145,6 +145,3 @@ cython_debug/
 
 # staticfiles
 staticfiles/
-
-# frontend package files
-package-lock.json
