@@ -6,8 +6,8 @@ services:
       context: ../frontend/
       dockerfile: ../frontend/Dockerfile
     volumes:
-      - frontend:/src/frontend
-    entrypoint:  ["sh", "-c", "cp -a /src/bundles/* /src/frontend/"]
+      - ../static:/src/static
+    entrypoint:  ["sh", "-c", "cp -a /src/bundles/* /src/static/"]
 
   back_helper:
     build:
@@ -15,31 +15,29 @@ services:
       dockerfile: ../backend/Dockerfile
     image: app_image
     volumes:
-      - frontend:/src/frontend
-    entrypoint: ["sh", "-c", "cp -a /src/staticfiles/* /src/frontend/"]
+      - ../static:/src/static
+    entrypoint: ["sh", "-c", "cp -a /src/staticfiles/* /src/static/"]
+
+  db:
+    image: postgres
+    env_file:
+      - ../backend/src/star_burger/.env
+    volumes:
+      - pgdata:/var/lib/postgresql/data
 
   app:
     image: app_image
-    volumes:
-      - frontend:/src/frontend
     restart: always
+    volumes:
+      - ../media:/src/media
     depends_on:
       front_helper:
         condition: service_completed_successfully
       back_helper:
         condition: service_completed_successfully
     ports:
-      - '8090:8090'
-    entrypoint: gunicorn -w 3 -b 127.0.0.1:8090 star_burger.wsgi:application
-
-#  db:
-#    image: postgres
-#    env_file:
-#      - ../backend/src/star_burger/.env
-#    volumes:
-#      - pgdata:/var/lib/postgresql/data
-
+      - 8090:8090
+    entrypoint: gunicorn -w 3 -b 0.0.0.0:8090 star_burger.wsgi:application
 
 volumes:
-  frontend:
-
+  pgdata:

@@ -93,9 +93,14 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
 DATABASES = {
-    'default': dj_database_url.config(
-        default=env('DATABASE_URL', f'sqlite:///{BASE_DIR}/db.sqlite3')
-    )
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': env('POSTGRES_DB', default='default_db'),
+        'USER': env('POSTGRES_USER', default='default_user'),
+        'PASSWORD': env('POSTGRES_PASSWORD', default='default_pass'),
+        'HOST': env('POSTGRES_HOSTNAME', default='default_host'),
+        'PORT': '5432',
+    }
 }
 
 AUTH_PASSWORD_VALIDATORS = [
