@@ -2,25 +2,15 @@
 set -e
 set -o pipefail
 
-work_dir="/opt/star_burger"
-python=$work_dir"/venv/bin/python"
-pip=$work_dir"/venv/bin/pip"
-
-source $work_dir"/star_burger/.env"
-
+work_dir="/opt/star_burger_docker"
 cd $work_dir
+
 git pull
 
-$pip install -r requirements.txt
-$python manage.py collectstatic --noinput
-$python manage.py migrate --noinput
+docker compose -f $work_dir"/production/docker-compose-prod.yml" down
+docker compose -f $work_dir"/production/docker-compose-prod.yml" up --build
+docker exec -it production_app_1 python manage.py migrate --noinput
 
-npm ci --include=dev
-export NODE_OPTIONS=--no-experimental-fetch
-./node_modules/.bin/parcel build bundles-src/index.js --dist-dir bundles --public-url="./"
-npm audit fix
-
-systemctl restart star-burger.service
 systemctl reload nginx.service
 
 last_commit=$(git rev-parse HEAD)
