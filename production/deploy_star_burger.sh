@@ -3,6 +3,9 @@ set -e
 set -o pipefail
 
 work_dir="/opt/star_burger_docker"
+
+source $work_dir"/backend/src/star_burger/.env"
+
 cd $work_dir
 
 git pull
