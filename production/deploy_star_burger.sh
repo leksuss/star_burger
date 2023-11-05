@@ -8,7 +8,7 @@ cd $work_dir
 git pull
 
 docker compose -f $work_dir"/production/docker-compose-prod.yml" down
-docker compose -f $work_dir"/production/docker-compose-prod.yml" up -d --build
+docker compose -f $work_dir"/production/docker-compose-prod.yml" up -d
 docker exec -it production_app_1 python manage.py migrate --noinput
 
 systemctl reload nginx.service
