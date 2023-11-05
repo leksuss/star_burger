@@ -1,29 +1,37 @@
 version: '3.8'
 
 services:
-  front_helper:
+  frontend:
     build:
       context: ../frontend/
       dockerfile: ../frontend/Dockerfile
     volumes:
-      - frontend:/src/frontend
-    entrypoint:  ["sh", "-c", "cp -a /src/bundles/* /src/frontend/"]
+      - ../frontend/src/bundles:/src/bundles
+    command: ./node_modules/.bin/parcel watch bundles-src/index.js --dist-dir bundles --public-url="./"
+
+  db:
+    image: postgres
+    env_file:
+      - ../backend/src/star_burger/.env
+    volumes:
+      - pgdata:/var/lib/postgresql/data
 
   app:
     build:
       context: ../backend/
       dockerfile: ../backend/Dockerfile
     volumes:
-      - frontend:/src/frontend
+      - media:/src/media
+      - ../backend/src:/src
+      - ../frontend/src/bundles:/src/bundles
     restart: always
     depends_on:
-      front_helper:
-        condition: service_completed_successfully
-      back_helper:
-        condition: service_completed_successfully
+      - frontend
+      - db
     ports:
       - '8000:8000'
     entrypoint: python manage.py runserver 0.0.0.0:8000
 
 volumes:
-  frontend:
+  pgdata:
+  media:
