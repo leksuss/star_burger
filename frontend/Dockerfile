@@ -1,5 +1,8 @@
 FROM node:16.16-slim
 
+RUN apt-get update \
+    && rm -rf /var/lib/apt/lists/*
+
 WORKDIR /src
 COPY /src .
 
