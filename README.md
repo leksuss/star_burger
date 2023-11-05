@@ -117,7 +117,7 @@ docker exec -it production-app-1 python manage.py createsuperuser
 
 Для удобства обновления в комплект поставки входит скрипт деплоя.
 
-Первичная настройка заключается в указании абсолютного пути к рабочей директории (`work_dir="</path/to/project/dir>"`):
+Первичная настройка заключается в указании абсолютного пути к рабочей директории (`work_dir=""`):
 ```shell
 vim production/deploy_star_burger.sh
 ```

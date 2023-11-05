@@ -2,14 +2,14 @@
 set -e
 set -o pipefail
 
-work_dir="</path/to/project/dir>"
+work_dir="/opt/star_burger_docker"
 cd $work_dir
 
 git pull
 
 docker compose -f $work_dir"/production/docker-compose-prod.yml" down
 docker compose -f $work_dir"/production/docker-compose-prod.yml" up -d
-docker exec -it production_app_1 python manage.py migrate --noinput
+docker exec -it production-app-1 python manage.py migrate --noinput
 
 systemctl reload nginx.service
 
