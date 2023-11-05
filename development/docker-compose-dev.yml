@@ -7,6 +7,7 @@ services:
       dockerfile: ../frontend/Dockerfile
     volumes:
       - ../frontend/src/bundles:/src/bundles
+      - ../frontend/src/bundles-src:/src/bundles-src
     command: ./node_modules/.bin/parcel watch bundles-src/index.js --dist-dir bundles --public-url="./"
 
   db:

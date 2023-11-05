@@ -20,8 +20,14 @@ services:
 
   db:
     image: postgres
+    restart: always
     env_file:
       - ../backend/src/star_burger/.env
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
     volumes:
       - pgdata:/var/lib/postgresql/data
 
@@ -35,6 +41,8 @@ services:
         condition: service_completed_successfully
       back_helper:
         condition: service_completed_successfully
+      db:
+        condition: service_healthy
     ports:
       - 8090:8090
     entrypoint: gunicorn -w 3 -b 0.0.0.0:8090 star_burger.wsgi:application
